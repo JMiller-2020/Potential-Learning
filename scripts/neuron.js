@@ -9,16 +9,23 @@ const NODE_RADIUS = 4;
 const NODE_COLOR = "#edd";
 const ANCHOR_STROKE_COLOR = "#2ff"
 
+const BASELINE_VALUE = 0;
+const DEFAULT_THRESHOLD = 1;
+
 const GRAVITY = 0;
 
 var idCounter = 0;
 
 class Neuron {
 
-  // id, ins, x, y, r, c
+  // id, value, threshold,
+  // ins, weights, linkLens,
+  // x, y, r, c
 
   constructor(x, y, isAnchor=false) {
     this.id = idCounter++;
+    this.value = BASELINE_VALUE;
+    this.threshold = DEFAULT_THRESHOLD;
     this.x = this.prevX = x;
     this.y = this.prevY = y;
     this.r = NODE_RADIUS;
@@ -34,6 +41,10 @@ class Neuron {
     this.weights.push(weight);
     // this.linkLens.push(LINK_LEN);
     this.linkLens.push(dist(this.x, this.y, other.x, other.y));
+  }
+
+  getPotential() {
+    return Math.max(this.threshold - this.value, 0);
   }
 
   drawConns(ctx, useGradient=false) {
@@ -91,7 +102,7 @@ class Neuron {
     }
   }
 
-  tick() {
+  physicsTick() {
     if(!this.isAnchor) {
       let deltaX = this.x - this.prevX;
       let deltaY = this.y - this.prevY;
@@ -125,6 +136,14 @@ class Neuron {
         other.x = lerp(this.x, other.x, 0.5 + bounce/2) - orderingForce/2;
         other.y = lerp(this.y, other.y, 0.5 + bounce/2);
       }
+    }
+  }
+
+  tick() {
+    this.physicsTick();
+
+    for(let i = 0; i < this.ins.length; i++) {
+
     }
   }
 }

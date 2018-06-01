@@ -11,6 +11,7 @@ var ctx;
 var h, w;
 
 var neurons;
+var game;
 
 function draw() {
   ctx.fillStyle = BG_COLOR;
@@ -32,6 +33,8 @@ function draw() {
   for(let i = 0; i < neurons.length; i++) {
     neurons[i].draw(ctx);
   }
+
+  game.draw(ctx);
 }
 
 function tick() {
@@ -81,12 +84,12 @@ function init() {
   let useAnchors = true;
 
   neurons = [
-    new Neuron(10, 90, useAnchors),
-    new Neuron(20, 30, useAnchors),
-    new Neuron(50, 60),
-    new Neuron(100, 75),
-    new Neuron(150, 45, useAnchors),
-    new Neuron(0, 0),
+    new Neuron(100, 90, useAnchors),
+    new Neuron(150, 130, useAnchors),
+    new Neuron(500, 60),
+    new Neuron(600, 75),
+    new Neuron(500, 95, useAnchors),
+    new Neuron(400, 100),
   ]
 
   neurons[2].addIn(neurons[0]);
@@ -100,6 +103,8 @@ function init() {
 
   neurons[5].addIn(neurons[2]);
   neurons[4].addIn(neurons[5]);
+
+  game = new Game2048(10, 10);
 
   console.log("initialization finished");
 }
