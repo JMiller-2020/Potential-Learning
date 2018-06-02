@@ -124,9 +124,12 @@ class Neuron {
 
     for(let i = 0; i < this.ins.length; i++) {
       let other = this.ins[i];
-      if(this.isAnchor && other.isAnchor) { continue; }
 
       let d = dist(this.x, this.y, other.x, other.y);
+      if(this.isAnchor && other.isAnchor) {
+        this.linkLens[i] = d; // so that dragging works
+        continue;
+      }
       let distRatio = this.linkLens[i] / d;
       let stretch = lerp(1, distRatio, LINK_STRETCH);
       this.linkLens[i] /= stretch / (1 - LINK_PULL);
