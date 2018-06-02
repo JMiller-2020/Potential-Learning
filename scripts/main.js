@@ -108,7 +108,8 @@ function handleMouseMove(e) {
 
 function handleKeypress(e) {
   // TODO fix this
-  game.play(3);
+  let reward = game.play(randInt(0,3));
+  console.log(reward);
 }
 
 function init() {

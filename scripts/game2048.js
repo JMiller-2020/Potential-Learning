@@ -38,6 +38,7 @@ class Game2048 {
             if(board[r][c] == board[r][c2]) {
               sum += board[r][c2];
               board[r][c2] = 0;
+              this.score += sum;
               break;
             }
             if(board[r][c2] != 0) {
@@ -60,6 +61,7 @@ class Game2048 {
    * @returns reward from given action
    */
   play(dir) {
+    let oldScore = this.score;
     switch(dir) {
       case 0: /*LEFT*/
         this.board = this.shiftBoardLeft(this.board.slice());
@@ -75,7 +77,10 @@ class Game2048 {
         this.board = transpose(flipHori(this.shiftBoardLeft(board)));
         break;
     }
-    this.addTile()
+    if(!this.addTile()) {
+      return -1;
+    }
+    return this.score - oldScore;
   }
 
   /**
