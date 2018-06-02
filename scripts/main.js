@@ -13,6 +13,8 @@ var h, w;
 var neurons;
 var game;
 
+var dragging, dragX, dragY, dragAnchor;
+
 function draw() {
   ctx.fillStyle = BG_COLOR;
   ctx.fillRect(0, 0, w, h);
@@ -75,8 +77,42 @@ function updateBounds() {
   h = cvs.height = ctx.canvas.clientHeight;
 }
 
+function handleMouseDown(e) {
+  for(let i = 0; i < neurons.length; i++) {
+    if(neurons[i].contains(e.clientX, e.clientY)) {
+      dragging = neurons[i];
+      dragAnchor = dragging.isAnchor;
+      dragging.isAnchor = true;
+      dragX = dragging.x - e.clientX;
+      dragY = dragging.y - e.clientY;
+    }
+  }
+}
+
+function handleMouseUp() {
+  if(dragging != null) {
+    dragging.prevX = dragging.x;
+    dragging.prevY = dragging.y;
+    dragging.isAnchor = dragAnchor;
+    dragging = null;
+  }
+}
+
+function handleMouseMove(e) {
+  // console.log("mouse move");
+  if(dragging != null) {
+    dragging.x = e.clientX + dragX;
+    dragging.y = e.clientY + dragY;
+  }
+}
+
 function init() {
   cvs = document.getElementById("main-canvas");
+  cvs.addEventListener("mousedown", handleMouseDown);
+  cvs.addEventListener("mouseup", handleMouseUp);
+  cvs.addEventListener("mousemove", handleMouseMove);
+  // to make the mouse look right:
+  cvs.addEventListener("selectstart", (e) => {e.preventDefault();});
   ctx = cvs.getContext("2d");
   updateBounds();
   window.addEventListener("resize", updateBounds);
@@ -107,6 +143,10 @@ function init() {
   game = new Game2048(10, 10);
 
   console.log("initialization finished");
+}
+
+function clickHandler() {
+  console.log("click");
 }
 
 function main() {

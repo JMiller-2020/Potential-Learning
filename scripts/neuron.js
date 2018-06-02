@@ -47,6 +47,15 @@ class Neuron {
     return Math.max(this.threshold - this.value, 0);
   }
 
+  contains(x, y) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.r, 0, 2*Math.PI);
+    let result = ctx.isPointInPath(x, y);
+    ctx.restore();
+    return result;
+  }
+
   drawConns(ctx, useGradient=false) {
     ctx.save();
     for(let i = 0; i < this.ins.length; i++) {
