@@ -106,6 +106,11 @@ function handleMouseMove(e) {
   }
 }
 
+function handleKeypress(e) {
+  // TODO fix this
+  game.play(3);
+}
+
 function init() {
   cvs = document.getElementById("main-canvas");
   cvs.addEventListener("mousedown", handleMouseDown);
@@ -116,6 +121,7 @@ function init() {
   ctx = cvs.getContext("2d");
   updateBounds();
   window.addEventListener("resize", updateBounds);
+  window.addEventListener("keypress", handleKeypress);
 
   let useAnchors = true;
 

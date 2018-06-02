@@ -18,13 +18,64 @@ class Game2048 {
    */
   full() {
     for(let r = 0; r < this.board.length; r++) {
-      for(let c = 0; r < this.board[r].length; c++) {
+      for(let c = 0; c < this.board[r].length; c++) {
         if(this.board[r][c] == 0) {
           return false;
         }
       }
     }
+    console.log("board is full");
     return true;
+  }
+
+  shiftBoardLeft(board) {
+    for(let r = 0; r < board.length; r++) {
+      let filled = 0;
+      for(let c = 0; c < board[r].length; c++) {
+        if(board[r][c] != 0) {
+          let sum = board[r][c];
+          for(let c2 = c+1; c2 < board[r].length; c2++) {
+            if(board[r][c] == board[r][c2]) {
+              sum += board[r][c2];
+              board[r][c2] = 0;
+              break;
+            }
+            if(board[r][c2] != 0) {
+              break;
+            }
+          }
+          board[r][c] = 0;
+          board[r][filled] = sum;
+          filled++;
+        }
+      }
+    }
+    return board;
+  }
+
+  /**
+   * plays one turn of 2048
+   * @param dir direction of action (more generally, an int representing input)
+   *
+   * @returns reward from given action
+   */
+  play(dir) {
+    switch(dir) {
+      case 0: /*LEFT*/
+        this.board = this.shiftBoardLeft(this.board.slice());
+        break;
+      case 1: /*UP*/
+        this.board = transpose(this.shiftBoardLeft(transpose(this.board.slice())));
+        break;
+      case 2: /*RIGHT*/
+        this.board = flipHori(this.shiftBoardLeft(flipHori(this.board.slice())));
+        break;
+      case 3: /*DOWN*/
+        let board = flipHori(transpose(this.board.slice()));
+        this.board = transpose(flipHori(this.shiftBoardLeft(board)));
+        break;
+    }
+    this.addTile()
   }
 
   /**

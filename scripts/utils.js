@@ -27,6 +27,30 @@ function zeros(dims) {
   return array;
 }
 
+function transpose(array) {
+  var result = [];
+  for(let c = 0; c < array[0].length; c++) {
+    let row = [];
+    for(let r = 0; r < array.length; r++) {
+      row.push(array[r][c]);
+    }
+    result.push(row);
+  }
+  return result;
+}
+
+function flipHori(array) {
+  var result = [];
+  for(let r = 0; r < array.length; r++) {
+    let row = [];
+    for(let c = 0; c < array[r].length; c++) {
+      row.push(array[r][array[r].length - 1 - c]);
+    }
+    result.push(row);
+  }
+  return result;
+}
+
 function randInt(min, max) {
   return Math.trunc(Math.random() * (max - min + 1) + min)
 }
