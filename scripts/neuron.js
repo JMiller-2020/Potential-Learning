@@ -14,7 +14,7 @@ const DEFAULT_THRESHOLD = 1;
 
 const GRAVITY = 0;
 
-var idCounter = 0;
+var neuronCounter = 0;
 
 class Neuron {
 
@@ -22,8 +22,8 @@ class Neuron {
   // ins, weights, linkLens,
   // x, y, r, c
 
-  constructor(x, y, isAnchor=false) {
-    this.id = idCounter++;
+  constructor(x=randInt(0,w), y=randInt(0,h), isAnchor=false) {
+    this.id = neuronCounter++;
     this.value = BASELINE_VALUE;
     this.threshold = DEFAULT_THRESHOLD;
     this.x = this.prevX = x;
@@ -101,7 +101,7 @@ class Neuron {
       this.prevY = deltaY + this.r;
       this.y = this.r;
     }
-    if(this.x > ctx.canvas.width) {
+    if(this.x > ctx.canvas.width - this.r) {
       this.prevX = ctx.canvas.width - this.r + deltaX;
       this.x = ctx.canvas.width - this.r;
     }
@@ -112,6 +112,9 @@ class Neuron {
   }
 
   physicsTick() {
+    if(!this.isAnchor && this.ins.length == 0) {
+      this.isAnchor = true;
+    }
     if(!this.isAnchor) {
       let deltaX = this.x - this.prevX;
       let deltaY = this.y - this.prevY;
@@ -155,7 +158,7 @@ class Neuron {
     this.physicsTick();
 
     for(let i = 0; i < this.ins.length; i++) {
-
+      // TODO get input and set value
     }
   }
 }

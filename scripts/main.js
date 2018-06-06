@@ -10,7 +10,7 @@ var cvs;
 var ctx;
 var h, w;
 
-var neurons;
+var network;
 var game;
 
 var dragging, dragX, dragY, dragAnchor;
@@ -29,22 +29,22 @@ function draw() {
   // image: drawImage(img,x,y) (img = document.getElById("img_id"))
   // can also create patterns, shadows, and paths (lookup if required)
 
-  for(let i = 0; i < neurons.length; i++) {
-    neurons[i].drawConns(ctx, true);
+  for(let i = 0; i < network.length; i++) {
+    network[i].drawConns(ctx, true);
   }
-  for(let i = 0; i < neurons.length; i++) {
-    neurons[i].draw(ctx);
+  for(let i = 0; i < network.length; i++) {
+    network[i].draw(ctx);
   }
 
   game.draw(ctx);
 }
 
 function tick() {
-  for(let i = 0; i < neurons.length; i++) {
-    neurons[i].tick();
+  for(let i = 0; i < network.length; i++) {
+    network[i].tick();
   }
-  for(let i = 0; i < neurons.length; i++) {
-    neurons[i].bound(ctx);
+  for(let i = 0; i < network.length; i++) {
+    network[i].bound(ctx);
   }
 }
 
@@ -78,9 +78,9 @@ function updateBounds() {
 }
 
 function handleMouseDown(e) {
-  for(let i = 0; i < neurons.length; i++) {
-    if(neurons[i].contains(e.clientX, e.clientY)) {
-      dragging = neurons[i];
+  for(let i = 0; i < network.length; i++) {
+    if(network[i].contains(e.clientX, e.clientY)) {
+      dragging = network[i];
       dragAnchor = dragging.isAnchor;
       dragging.isAnchor = true;
       dragX = dragging.x - e.clientX;
@@ -106,6 +106,14 @@ function handleMouseMove(e) {
   }
 }
 
+function handleDoubleClick(e) {
+  for(let i = 0; i < network.length; i++) {
+    if(network[i].contains(e.clientX, e.clientY)) {
+      network[i].isAnchor = !network[i].isAnchor;
+    }
+  }
+}
+
 function handleKeypress(e) {
   // TODO fix this
   let reward = game.play(randInt(0,3));
@@ -117,6 +125,7 @@ function init() {
   cvs.addEventListener("mousedown", handleMouseDown);
   cvs.addEventListener("mouseup", handleMouseUp);
   cvs.addEventListener("mousemove", handleMouseMove);
+  cvs.addEventListener("dblclick", handleDoubleClick);
   // to make the mouse look right:
   cvs.addEventListener("selectstart", (e) => {e.preventDefault();});
   ctx = cvs.getContext("2d");
@@ -126,7 +135,7 @@ function init() {
 
   let useAnchors = true;
 
-  neurons = [
+  network = [
     new Neuron(100, 90, useAnchors),
     new Neuron(150, 130, useAnchors),
     new Neuron(500, 60),
@@ -135,25 +144,24 @@ function init() {
     new Neuron(400, 100),
   ]
 
-  neurons[2].addIn(neurons[0]);
-  neurons[2].addIn(neurons[1]);
-  neurons[3].addIn(neurons[0]);
-  neurons[3].addIn(neurons[1]);
-  neurons[3].addIn(neurons[2]);
-  neurons[4].addIn(neurons[0]);
-  neurons[4].addIn(neurons[2]);
-  neurons[4].addIn(neurons[3]);
+  network[2].addIn(network[0]);
+  network[2].addIn(network[1]);
+  network[3].addIn(network[0]);
+  network[3].addIn(network[1]);
+  network[3].addIn(network[2]);
+  network[4].addIn(network[0]);
+  network[4].addIn(network[2]);
+  network[4].addIn(network[3]);
 
-  neurons[5].addIn(neurons[2]);
-  neurons[4].addIn(neurons[5]);
+  network[5].addIn(network[2]);
+  network[4].addIn(network[5]);
+
+  var genome = Genome.fromNetwork(network);
+  network = genome.toNetwork();
 
   game = new Game2048(10, 10);
 
   console.log("initialization finished");
-}
-
-function clickHandler() {
-  console.log("click");
 }
 
 function main() {
